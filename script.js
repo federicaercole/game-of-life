@@ -55,8 +55,31 @@ export const checkNeighbors = (cell) => {
 
 const checkAliveState = (x, y) => {
     const cellIndex = getCellIndex(x, y);
-    if (x < 0 || y < 0 || x >= gameboardOptions.columns || y >= gameboardOptions.rows) {
+    if (gameboard[cellIndex]) {
+        return gameboard[cellIndex].alive ? 1 : 0;
+    } else {
         return 0;
     }
-    return gameboard[cellIndex].alive ? 1 : 0;
 };
+
+export const game = () => {
+    for (let y = 0; y < gameboardOptions.rows; y++) {
+        for (let x = 0; x < gameboardOptions.columns; x++) {
+            const cellIndex = getCellIndex(x, y);
+            const cell = gameboard[cellIndex];
+            const numberOfAliveCells = checkNeighbors(cell);
+            const cellState = gameConditions(cell, numberOfAliveCells);
+            gameboard[cellIndex] = cellState;
+        }
+    }
+};
+
+function gameConditions(cell, numberOfAliveCells) {
+    let cellState = cell;
+    if (cellState.alive) {
+        if (numberOfAliveCells < 2 || numberOfAliveCells > 3) {
+            cellState = changeAliveState(cell, false);
+        }
+    }
+    return cellState;
+}

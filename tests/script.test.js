@@ -1,4 +1,4 @@
-import { cell, gameboard, changeAliveState, createGameBoard, getCellIndex, randomizeBoard, checkNeighbors } from "../script";
+import { cell, gameboard, changeAliveState, createGameBoard, getCellIndex, randomizeBoard, checkNeighbors, game } from "../script";
 
 describe("cell creation", () => {
 
@@ -65,10 +65,10 @@ describe("gameboard", () => {
 
 describe("game logic", () => {
 
-    test("check number of alive cells around cell x: 1, y:1", () => {
-        gameboard[0].alive = true;
-        gameboard[1].alive = true;
-        gameboard[10].alive = true;
+    test("check number of alive cells around cell x:1, y:1", () => {
+        gameboard[0] = changeAliveState(gameboard[0], true);
+        gameboard[1] = changeAliveState(gameboard[1], true);
+        gameboard[10] = changeAliveState(gameboard[10], true);
 
         const numberAlive = checkNeighbors(gameboard[11]);
 
@@ -76,11 +76,24 @@ describe("game logic", () => {
     });
 
     test("check number of alive cells around cell x:0, y:0", () => {
-        gameboard[1].alive = true;
-        gameboard[10].alive = true;
+        gameboard[1] = changeAliveState(gameboard[1], true);
+        gameboard[10] = changeAliveState(gameboard[10], true);
 
         const numberAlive = checkNeighbors(gameboard[0]);
 
         expect(numberAlive).toBe(2);
     });
-})
+
+    test("check if an alive cell become dead with less than 2 neighbors alive", () => {
+        gameboard[0] = changeAliveState(gameboard[0], true);
+        gameboard[1] = changeAliveState(gameboard[1], true);
+        gameboard[10] = changeAliveState(gameboard[10], false);
+
+        game();
+
+        expect(gameboard[0]).toEqual({ alive: false, x: 0, y: 0 });
+    });
+});
+
+
+
