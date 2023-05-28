@@ -93,7 +93,40 @@ describe("game logic", () => {
 
         expect(gameboard[0]).toEqual({ alive: false, x: 0, y: 0 });
     });
+
+    test("check if an alive cell become dead with more than 3 neighbors alive", () => {
+        gameboard[0] = changeAliveState(gameboard[0], true);
+        gameboard[1] = changeAliveState(gameboard[1], true);
+        gameboard[2] = changeAliveState(gameboard[2], true);
+        gameboard[10] = changeAliveState(gameboard[10], true);
+        gameboard[11] = changeAliveState(gameboard[11], true);
+
+        game();
+
+        expect(gameboard[1]).toEqual({ alive: false, x: 1, y: 0 });
+    });
+
+    test("check if a dead cell become alive with exactly 3 neighbors alive", () => {
+        gameboard[0] = changeAliveState(gameboard[0], false);
+        gameboard[1] = changeAliveState(gameboard[1], true);
+        gameboard[2] = changeAliveState(gameboard[2], true);
+        gameboard[10] = changeAliveState(gameboard[10], true);
+        gameboard[11] = changeAliveState(gameboard[11], true);
+
+        game();
+
+        expect(gameboard[0]).toEqual({ alive: true, x: 0, y: 0 });
+    });
+
+    test("a cell doesn't change its state if it has 2 alive neighbors", () => {
+        gameboard[0] = changeAliveState(gameboard[0], true);
+        gameboard[1] = changeAliveState(gameboard[1], true);
+        gameboard[2] = changeAliveState(gameboard[2], false);
+        gameboard[10] = changeAliveState(gameboard[10], true);
+        gameboard[11] = changeAliveState(gameboard[11], false);
+
+        game();
+
+        expect(gameboard[0]).toEqual({ alive: true, x: 0, y: 0 });
+    });
 });
-
-
-

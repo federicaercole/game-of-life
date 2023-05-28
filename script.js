@@ -76,10 +76,10 @@ export const game = () => {
 
 function gameConditions(cell, numberOfAliveCells) {
     let cellState = cell;
-    if (cellState.alive) {
-        if (numberOfAliveCells < 2 || numberOfAliveCells > 3) {
-            cellState = changeAliveState(cell, false);
-        }
+    if (numberOfAliveCells === 3) {
+        cellState = changeAliveState(cell, true);
+    } else if (numberOfAliveCells < 2 || numberOfAliveCells > 3) {
+        cellState = changeAliveState(cell, false);
     }
     return cellState;
 }
