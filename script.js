@@ -18,8 +18,8 @@ const changeAliveState = (cell, value) => {
 };
 
 const gameboardOptions = {
-    rows: 10,
-    columns: 10,
+    rows: 30,
+    columns: 50,
 };
 
 const createGameBoard = (options) => {
@@ -92,17 +92,31 @@ const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
 
 const drawCell = (cell) => {
-    const width = 50;
-    const height = 50;
+    const width = 20;
+    const height = 20;
     canvasCtx.fillStyle = cell.alive ? '#123456' : '#000';
     canvasCtx.fillRect(cell.x * width, cell.y * height, width, height);
 };
 
-function startGame() {
-    gameboard = randomizeBoard();
+const drawGameboard = () => {
     for (let i = 0; i < gameboard.length; i++) {
         drawCell(gameboard[i]);
     };
 };
 
+function startGame() {
+    gameboard = randomizeBoard();
+    drawGameboard();
+}
+
+function iterateGame() {
+    game();
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGameboard();
+    setTimeout(() => {
+        requestAnimationFrame(iterateGame);
+    }, 400)
+}
+
 startGame();
+iterateGame();
