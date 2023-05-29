@@ -1,4 +1,7 @@
-export const cell = (x, y) => {
+export { cell, gameboard, changeAliveState, createGameBoard, getCellIndex, randomizeBoard, checkNeighbors, game };
+
+// Game logic
+const cell = (x, y) => {
     const state = {
         alive: false,
         x: x,
@@ -7,7 +10,7 @@ export const cell = (x, y) => {
     return state;
 };
 
-export const changeAliveState = (cell, value) => {
+const changeAliveState = (cell, value) => {
     return {
         ...cell,
         alive: value
@@ -19,7 +22,7 @@ const gameboardOptions = {
     columns: 10,
 };
 
-export const createGameBoard = (options) => {
+const createGameBoard = (options) => {
     let gameboard = [];
 
     for (let y = 0; y < options.rows; y++) {
@@ -30,20 +33,20 @@ export const createGameBoard = (options) => {
     return gameboard;
 };
 
-export const gameboard = createGameBoard(gameboardOptions);
+let gameboard = createGameBoard(gameboardOptions);
 
-export const getCellIndex = (x, y) => {
+const getCellIndex = (x, y) => {
     return x + (y * gameboardOptions.columns);
 };
 
-export const randomizeBoard = () => {
+const randomizeBoard = () => {
     const randomBoard = gameboard.map(cell => {
         return changeAliveState(cell, Math.random() > 0.5);
     });
     return randomBoard;
 };
 
-export const checkNeighbors = (cell) => {
+const checkNeighbors = (cell) => {
     const x = cell.x;
     const y = cell.y;
 
@@ -62,7 +65,7 @@ const checkAliveState = (x, y) => {
     }
 };
 
-export const game = () => {
+const game = () => {
     for (let y = 0; y < gameboardOptions.rows; y++) {
         for (let x = 0; x < gameboardOptions.columns; x++) {
             const cellIndex = getCellIndex(x, y);
@@ -83,3 +86,23 @@ function gameConditions(cell, numberOfAliveCells) {
     }
     return cellState;
 }
+
+// UI
+const canvas = document.querySelector("canvas");
+const canvasCtx = canvas.getContext("2d");
+
+const drawCell = (cell) => {
+    const width = 50;
+    const height = 50;
+    canvasCtx.fillStyle = cell.alive ? '#123456' : '#000';
+    canvasCtx.fillRect(cell.x * width, cell.y * height, width, height);
+};
+
+function startGame() {
+    gameboard = randomizeBoard();
+    for (let i = 0; i < gameboard.length; i++) {
+        drawCell(gameboard[i]);
+    };
+};
+
+startGame();
