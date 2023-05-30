@@ -18,8 +18,8 @@ const changeAliveState = (cell, value) => {
 };
 
 const gameboardOptions = {
-    rows: 30,
-    columns: 50,
+    rows: 60,
+    columns: 100,
 };
 
 const createGameBoard = (options) => {
@@ -58,26 +58,33 @@ const checkNeighbors = (cell) => {
 
 const checkAliveState = (x, y) => {
     const cellIndex = getCellIndex(x, y);
-    if (gameboard[cellIndex]) {
-        return gameboard[cellIndex].alive ? 1 : 0;
-    } else {
+    if (x < 0 || x >= gameboardOptions.columns || y < 0 || y >= gameboardOptions.rows) {
         return 0;
     }
+    return gameboard[cellIndex].alive ? 1 : 0;
 };
 
 const game = () => {
+    let gameboardCopy = [...gameboard];
     for (let y = 0; y < gameboardOptions.rows; y++) {
         for (let x = 0; x < gameboardOptions.columns; x++) {
             const cellIndex = getCellIndex(x, y);
-            const cell = gameboard[cellIndex];
+            const cell = gameboardCopy[cellIndex];
             const numberOfAliveCells = checkNeighbors(cell);
-            const cellState = gameConditions(cell, numberOfAliveCells);
-            gameboard[cellIndex] = cellState;
+            const cellState = aliveConditions(cell, numberOfAliveCells);
+            gameboardCopy[cellIndex] = cellState;
         }
+    }
+    updateGameboard(gameboardCopy);
+};
+
+function updateGameboard(board) {
+    for (let i = 0; i < gameboard.length; i++) {
+        gameboard[i] = board[i];
     }
 };
 
-function gameConditions(cell, numberOfAliveCells) {
+function aliveConditions(cell, numberOfAliveCells) {
     let cellState = cell;
     if (numberOfAliveCells === 3) {
         cellState = changeAliveState(cell, true);
@@ -87,15 +94,15 @@ function gameConditions(cell, numberOfAliveCells) {
     return cellState;
 }
 
-// UI
+//UI
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
+const animationTimer = 200;
 
 const drawCell = (cell) => {
-    const width = 20;
-    const height = 20;
-    canvasCtx.fillStyle = cell.alive ? '#123456' : '#000';
-    canvasCtx.fillRect(cell.x * width, cell.y * height, width, height);
+    const side = 10;
+    canvasCtx.fillStyle = cell.alive ? '#65a30d' : '#111827';
+    canvasCtx.fillRect(cell.x * side, cell.y * side, side, side);
 };
 
 const drawGameboard = () => {
@@ -115,7 +122,7 @@ function iterateGame() {
     drawGameboard();
     setTimeout(() => {
         requestAnimationFrame(iterateGame);
-    }, 400)
+    }, animationTimer)
 }
 
 startGame();
