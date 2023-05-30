@@ -1,0 +1,23 @@
+:root {
+    --primary-600: #65a30d;
+    --background-800: #1f2937;
+    --background-900: #111827;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+
+body {
+    background-color: var(--background-900);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+canvas {
+    border: 10px solid var(--background-800);
+    max-width: 100%;
+}
