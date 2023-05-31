@@ -97,7 +97,8 @@ function aliveConditions(cell, numberOfAliveCells) {
 //UI
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
-const animationTimer = 200;
+const animationTimer = 100;
+let playing = false;
 
 const drawCell = (cell) => {
     const side = 10;
@@ -111,19 +112,43 @@ const drawGameboard = () => {
     };
 };
 
-function startGame() {
-    gameboard = randomizeBoard();
-    drawGameboard();
-}
-
 function iterateGame() {
     game();
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawGameboard();
-    setTimeout(() => {
-        requestAnimationFrame(iterateGame);
-    }, animationTimer)
+    const animation = setTimeout(() => requestAnimationFrame(iterateGame), animationTimer);
+    if (!playing) {
+        clearTimeout(animation);
+    }
 }
 
-startGame();
-iterateGame();
+const startBtn = document.querySelector(".start");
+const randomBtn = document.querySelector(".random");
+const clearBtn = document.querySelector(".clear");
+
+startBtn.addEventListener("click", () => {
+    if (playing) {
+        playing = false;
+        startBtn.textContent = "Continue";
+    } else {
+        playing = true;
+        startBtn.textContent = "Stop";
+    }
+    return iterateGame();
+});
+
+randomBtn.addEventListener("click", () => {
+    if (!playing) {
+        gameboard = randomizeBoard();
+        drawGameboard();
+        startBtn.textContent = "Start";
+    }
+});
+
+clearBtn.addEventListener("click", () => {
+    if (!playing) {
+        gameboard = createGameBoard(gameboardOptions);
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        startBtn.textContent = "Start";
+    }
+});
