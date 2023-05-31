@@ -1,4 +1,4 @@
-export { cell, gameboard, changeAliveState, createGameBoard, getCellIndex, randomizeBoard, checkNeighbors, game };
+//export { cell, gameboard, changeAliveState, createGameBoard, getCellIndex, randomizeBoard, checkNeighbors, game };
 
 // Game logic
 const cell = (x, y) => {
@@ -97,11 +97,11 @@ function aliveConditions(cell, numberOfAliveCells) {
 //UI
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
+const side = 10;
 const animationTimer = 100;
 let playing = false;
 
 const drawCell = (cell) => {
-    const side = 10;
     canvasCtx.fillStyle = cell.alive ? '#65a30d' : '#111827';
     canvasCtx.fillRect(cell.x * side, cell.y * side, side, side);
 };
@@ -152,3 +152,22 @@ clearBtn.addEventListener("click", () => {
         startBtn.textContent = "Start";
     }
 });
+
+canvas.addEventListener("mousedown", draw);
+
+function draw(event) {
+    if (!playing) {
+        const x = event.offsetX;
+        const y = event.offsetY;
+        const cellX = Math.floor(x / side);
+        const cellY = Math.floor(y / side);
+        const cellIndex = getCellIndex(cellX, cellY);
+        const target = gameboard[cellIndex];
+        if (target.alive) {
+            gameboard[cellIndex] = changeAliveState(target, false);
+        } else {
+            gameboard[cellIndex] = changeAliveState(target, true);
+        }
+        drawCell(gameboard[cellIndex]);
+    }
+}
