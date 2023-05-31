@@ -97,6 +97,7 @@ function aliveConditions(cell, numberOfAliveCells) {
 //UI
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
+let coord = { x: 0, y: 0 };
 const side = 10;
 const animationTimer = 100;
 let playing = false;
@@ -153,14 +154,28 @@ clearBtn.addEventListener("click", () => {
     }
 });
 
-canvas.addEventListener("mousedown", draw);
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mouseup', stopDrawing);
+
+function getCursorPosition(event) {
+    coord.x = event.offsetX * canvas.width / canvas.clientWidth;
+    coord.y = event.offsetY * canvas.height / canvas.clientHeight;
+}
+
+function startDrawing(event) {
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mousedown', draw);
+    getCursorPosition(event);
+}
+
+function stopDrawing() {
+    canvas.removeEventListener('mousemove', draw);
+}
 
 function draw(event) {
     if (!playing) {
-        const x = event.offsetX;
-        const y = event.offsetY;
-        const cellX = Math.floor(x / side);
-        const cellY = Math.floor(y / side);
+        const cellX = Math.floor(coord.x / side);
+        const cellY = Math.floor(coord.y / side);
         const cellIndex = getCellIndex(cellX, cellY);
         const target = gameboard[cellIndex];
         if (target.alive) {
@@ -168,6 +183,7 @@ function draw(event) {
         } else {
             gameboard[cellIndex] = changeAliveState(target, true);
         }
+        getCursorPosition(event);
         drawCell(gameboard[cellIndex]);
     }
 }
