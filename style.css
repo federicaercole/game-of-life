@@ -4,6 +4,9 @@
     --background-800: #1f2937;
     --background-700: #374151;
     --background-900: #111827;
+    --accent-500: #f97316;
+    --side: 10px;
+    --num-columns: 100;
 }
 
 * {
@@ -14,20 +17,29 @@
 
 body {
     background-color: var(--background-900);
-    display: grid;
-    place-items: center;
-    min-height: 100vh;
     font-size: 1rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 canvas {
+    background-color: var(--background-900);
     max-width: 100%;
+    height: auto;
+}
+
+:focus {
+    outline: 3px solid var(--accent-500);
+    outline-offset: 3px;
+    box-shadow: none;
+}
+
+div {
+    display: flex;
 }
 
 div:not(.container) {
-    align-self: start;
-    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
@@ -39,7 +51,8 @@ button {
     padding: 8px 24px;
     cursor: pointer;
     color: var(--background-900);
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.01rem;
 }
 
 button:hover {
@@ -60,16 +73,15 @@ button:hover {
 }
 
 .container {
+    max-width: calc(var(--num-columns) * var(--side));
     position: relative;
-    max-width: 1000px;
-    max-height: 600px;
     border: 10px solid var(--background-800);
+    margin: min(2rem, 4vh) auto;
 }
 
 .container svg {
     position: absolute;
     pointer-events: none;
-    z-index: 2;
     top: 0;
     left: 0;
     max-width: 100%;

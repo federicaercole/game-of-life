@@ -99,7 +99,7 @@ function aliveConditions(cell, numberOfAliveCells) {
 const side = 10;
 
 const container = document.querySelector(".container");
-const svg = `<svg width="${gameboardOptions.columns * side}" height="${gameboardOptions.rows * side}" xmlns="http://www.w3.org/2000/svg">
+const svg = `<svg aria-hidden="true" focusable="false" width="${gameboardOptions.columns * side}" height="${gameboardOptions.rows * side}" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <pattern id="grid" width="${side}" height="${side}" patternUnits="userSpaceOnUse">
                 <path d="M ${side} 0 L 0 0 0 ${side}" fill="none" stroke="#374151" stroke-width="0.5" />
@@ -108,14 +108,21 @@ const svg = `<svg width="${gameboardOptions.columns * side}" height="${gameboard
 
         <rect width="100%" height="100%" fill="url(#grid)" />
     </svg>`;
-const canvasHTML = `<canvas width="${gameboardOptions.columns * side}" height="${gameboardOptions.rows * side}"></canvas>`
+const canvasHTML = `<canvas width="${gameboardOptions.columns * side}" height="${gameboardOptions.rows * side}" aria-label="Game grid" role="img"></canvas>`
 container.innerHTML = svg + canvasHTML;
 
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
-let coord = { x: 0, y: 0 };
-const animationTimer = 100;
-let playing = false;
+
+window.addEventListener("resize", resizeGrid);
+
+function resizeGrid() {
+    const svgPattern = document.querySelector("svg pattern");
+    svgPattern.setAttribute("width", side / (canvas.width / canvas.clientWidth));
+    svgPattern.setAttribute("height", side / (canvas.width / canvas.clientWidth));
+}
+
+resizeGrid();
 
 const drawCell = (cell) => {
     canvasCtx.fillStyle = cell.alive ? '#65a30d' : '#111827';
@@ -127,6 +134,10 @@ const drawGameboard = () => {
         drawCell(gameboard[i]);
     };
 };
+
+let coord = { x: 0, y: 0 };
+const animationTimer = 100;
+let playing = false;
 
 function iterateGame() {
     game();
