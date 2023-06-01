@@ -95,10 +95,25 @@ function aliveConditions(cell, numberOfAliveCells) {
 }
 
 //UI
+
+const side = 10;
+
+const container = document.querySelector(".container");
+const svg = `<svg width="${gameboardOptions.columns * side}" height="${gameboardOptions.rows * side}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="grid" width="${side}" height="${side}" patternUnits="userSpaceOnUse">
+                <path d="M ${side} 0 L 0 0 0 ${side}" fill="none" stroke="#374151" stroke-width="0.5" />
+            </pattern>
+        </defs>
+
+        <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>`;
+const canvasHTML = `<canvas width="${gameboardOptions.columns * side}" height="${gameboardOptions.rows * side}"></canvas>`
+container.innerHTML = svg + canvasHTML;
+
 const canvas = document.querySelector("canvas");
 const canvasCtx = canvas.getContext("2d");
 let coord = { x: 0, y: 0 };
-const side = 10;
 const animationTimer = 100;
 let playing = false;
 
