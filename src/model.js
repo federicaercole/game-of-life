@@ -29,6 +29,18 @@ export default function model(options) {
 
     let gameboard = createGameBoard(options);
 
-    return { gameboard }
+    const getCellIndex = (x, y) => {
+        return x + (y * options.columns);
+    };
 
+    function changeCellState(cellIndex) {
+        const target = gameboard[cellIndex];
+        if (target.alive) {
+            gameboard[cellIndex] = changeAliveState(target, false);
+        } else {
+            gameboard[cellIndex] = changeAliveState(target, true);
+        }
+    }
+
+    return { gameboard, getCellIndex, changeCellState }
 }
