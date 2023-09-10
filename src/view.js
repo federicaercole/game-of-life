@@ -65,7 +65,7 @@ export default function view(options) {
         clearBtn.addEventListener("click", handler);
     }
 
-    document.addEventListener("changePlayingStatus", () => {
+    document.addEventListener("changeStartBtnText", () => {
         const pressedBtn = document.activeElement;
         if (options.playing && pressedBtn === startBtn) {
             startBtn.textContent = "Stop";

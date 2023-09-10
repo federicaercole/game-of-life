@@ -10,6 +10,8 @@ function init() {
         playing: false
     };
 
+    const animationTimer = 100;
+
     function getCursorPosition(event) {
         const canvas = document.querySelector("canvas");
         const x = event.offsetX * canvas.width / canvas.clientWidth;
@@ -25,11 +27,13 @@ function init() {
 
     appView.bindStartBtnEvent(() => {
         gameOptions.playing = !gameOptions.playing
-        document.dispatchEvent(new Event("changePlayingStatus"));
+        document.dispatchEvent(new Event("changeStartBtnText"));
+        return iterateGame();
     });
 
     appView.bindRandomBtnEvent(() => {
         if (!gameOptions.playing) {
+            document.dispatchEvent(new Event("changeStartBtnText"));
             const randomBoard = appModel.randomizeBoard();
             renderBoard(randomBoard);
         }
@@ -37,6 +41,7 @@ function init() {
 
     appView.bindClearBtnEvent(() => {
         if (!gameOptions.playing) {
+            document.dispatchEvent(new Event("changeStartBtnText"));
             const clearBoard = appModel.createGameBoard(gameOptions);
             renderBoard(clearBoard);
         }
@@ -52,6 +57,15 @@ function init() {
         if (!gameOptions.playing) {
             appModel.changeCellState(x, y);
             appView.drawGameboard(appModel.gameboard);
+        }
+    }
+
+    function iterateGame() {
+        appModel.game();
+        appView.drawGameboard(appModel.gameboard);
+        const animation = setTimeout(() => requestAnimationFrame(iterateGame), animationTimer);
+        if (!gameOptions.playing) {
+            clearTimeout(animation);
         }
     }
 }

@@ -54,5 +54,47 @@ export default function model(options) {
         }
     };
 
-    return { gameboard, changeCellState, createGameBoard, randomizeBoard, updateGameboard }
+    const game = () => {
+        let gameboardCopy = [...gameboard];
+        for (let y = 0; y < options.rows; y++) {
+            for (let x = 0; x < options.columns; x++) {
+                const cellIndex = getCellIndex(x, y);
+                const cell = gameboardCopy[cellIndex];
+                const numberOfAliveCells = checkNeighbors(cell);
+                const cellState = aliveConditions(cell, numberOfAliveCells);
+                gameboardCopy[cellIndex] = cellState;
+            }
+        }
+        updateGameboard(gameboardCopy);
+    };
+
+    function aliveConditions(cell, numberOfAliveCells) {
+        let cellState = cell;
+        if (numberOfAliveCells === 3) {
+            cellState = changeAliveState(cell, true);
+        } else if (numberOfAliveCells < 2 || numberOfAliveCells > 3) {
+            cellState = changeAliveState(cell, false);
+        }
+        return cellState;
+    }
+
+    const checkNeighbors = (cell) => {
+        const x = cell.x;
+        const y = cell.y;
+
+        let numberOfAliveCells = checkAliveState(x - 1, y - 1) + checkAliveState(x, y - 1) + checkAliveState(x + 1, y - 1) +
+            checkAliveState(x - 1, y) + checkAliveState(x + 1, y) + checkAliveState(x - 1, y + 1) + checkAliveState(x, y + 1) + checkAliveState(x + 1, y + 1);
+
+        return numberOfAliveCells;
+    };
+
+    const checkAliveState = (x, y) => {
+        const cellIndex = getCellIndex(x, y);
+        if (x < 0 || x >= options.columns || y < 0 || y >= options.rows) {
+            return 0;
+        }
+        return gameboard[cellIndex].alive ? 1 : 0;
+    };
+
+    return { gameboard, changeCellState, createGameBoard, randomizeBoard, updateGameboard, game }
 }
