@@ -3,13 +3,12 @@ import model from "./model.js";
 
 function init() {
 
-    const gameboardOptions = {
+    const gameOptions = {
         rows: 60,
         columns: 100,
-        side: 10
+        side: 10,
+        playing: false
     };
-
-    let playing = false;
 
     function getCursorPosition(event) {
         const canvas = document.querySelector("canvas");
@@ -18,21 +17,41 @@ function init() {
         return { x, y };
     }
 
-    const appModel = model(gameboardOptions);
-    const gameboard = appModel.gameboard;
-    const appView = view(gameboardOptions, gameboard);
+    const appModel = model(gameOptions);
+    const appView = view(gameOptions);
 
     appView.bindStartDrawingEvent(draw);
-    appView.bindStopDrawingEvent(draw)
+    appView.bindStopDrawingEvent(draw);
+
+    appView.bindStartBtnEvent(() => {
+        gameOptions.playing = !gameOptions.playing
+        document.dispatchEvent(new Event("changePlayingStatus"));
+    });
+
+    appView.bindRandomBtnEvent(() => {
+        if (!gameOptions.playing) {
+            const randomBoard = appModel.randomizeBoard();
+            renderBoard(randomBoard);
+        }
+    });
+
+    appView.bindClearBtnEvent(() => {
+        if (!gameOptions.playing) {
+            const clearBoard = appModel.createGameBoard(gameOptions);
+            renderBoard(clearBoard);
+        }
+    });
+
+    function renderBoard(gameboard) {
+        appModel.updateGameboard(gameboard);
+        appView.drawGameboard(appModel.gameboard);
+    }
 
     function draw(event) {
         const { x, y } = getCursorPosition(event);
-        if (!playing) {
-            const cellX = Math.floor(x / gameboardOptions.side);
-            const cellY = Math.floor(y / gameboardOptions.side);
-            const cellIndex = appModel.getCellIndex(cellX, cellY);
-            appModel.changeCellState(cellIndex);
-            appView.drawCell(gameboard[cellIndex]);
+        if (!gameOptions.playing) {
+            appModel.changeCellState(x, y);
+            appView.drawGameboard(appModel.gameboard);
         }
     }
 }

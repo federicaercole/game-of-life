@@ -1,4 +1,4 @@
-export default function view(options, gameboard) {
+export default function view(options) {
 
     const container = document.querySelector(".container");
     const svg = `<svg aria-hidden="true" focusable="false" width="${options.columns * options.side}" height="${options.rows * options.side}" xmlns="http://www.w3.org/2000/svg">
@@ -42,11 +42,39 @@ export default function view(options, gameboard) {
         canvasCtx.fillRect(cell.x * options.side, cell.y * options.side, options.side, options.side);
     };
 
-    const drawGameboard = () => {
+    const drawGameboard = (gameboard) => {
         for (let i = 0; i < gameboard.length; i++) {
             drawCell(gameboard[i]);
         };
     };
 
-    return { bindStartDrawingEvent, bindStopDrawingEvent, drawCell }
+    const startBtn = document.querySelector(".start");
+    const randomBtn = document.querySelector(".random");
+    const clearBtn = document.querySelector(".clear");
+
+
+    function bindRandomBtnEvent(handler) {
+        randomBtn.addEventListener("click", handler);
+    }
+
+    function bindStartBtnEvent(handler) {
+        startBtn.addEventListener("click", handler);
+    }
+
+    function bindClearBtnEvent(handler) {
+        clearBtn.addEventListener("click", handler);
+    }
+
+    document.addEventListener("changePlayingStatus", () => {
+        const pressedBtn = document.activeElement;
+        if (options.playing && pressedBtn === startBtn) {
+            startBtn.textContent = "Stop";
+        } else if (!options.playing && pressedBtn === startBtn) {
+            startBtn.textContent = "Continue";
+        } else if (!options.playing && pressedBtn !== startBtn) {
+            startBtn.textContent = "Start";
+        }
+    });
+
+    return { bindStartDrawingEvent, bindStopDrawingEvent, bindRandomBtnEvent, bindStartBtnEvent, bindClearBtnEvent, drawGameboard }
 }

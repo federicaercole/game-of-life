@@ -33,14 +33,26 @@ export default function model(options) {
         return x + (y * options.columns);
     };
 
-    function changeCellState(cellIndex) {
+    function changeCellState(x, y) {
+        const cellX = Math.floor(x / options.side);
+        const cellY = Math.floor(y / options.side);
+        const cellIndex = getCellIndex(cellX, cellY);
         const target = gameboard[cellIndex];
-        if (target.alive) {
-            gameboard[cellIndex] = changeAliveState(target, false);
-        } else {
-            gameboard[cellIndex] = changeAliveState(target, true);
-        }
+        gameboard[cellIndex] = changeAliveState(target, !target.alive);
     }
 
-    return { gameboard, getCellIndex, changeCellState }
+    const randomizeBoard = () => {
+        const randomBoard = gameboard.map(cell => {
+            return changeAliveState(cell, Math.random() > 0.5);
+        });
+        return randomBoard;
+    };
+
+    function updateGameboard(board) {
+        for (let i = 0; i < gameboard.length; i++) {
+            gameboard[i] = board[i];
+        }
+    };
+
+    return { gameboard, changeCellState, createGameBoard, randomizeBoard, updateGameboard }
 }
