@@ -1,6 +1,8 @@
-export default function model(options) {
+import { Cell, Options } from "./types";
 
-    const cell = (x, y) => {
+export default function model(options: Options) {
+
+    const cell = (x: number, y: number): Cell => {
         const state = {
             alive: false,
             x: x,
@@ -9,15 +11,15 @@ export default function model(options) {
         return state;
     };
 
-    const changeAliveState = (cell, value) => {
+    const changeAliveState = (cell: Cell, value: boolean): Cell => {
         return {
             ...cell,
             alive: value
         }
     };
 
-    const createGameBoard = (options) => {
-        let gameboard = [];
+    const createGameBoard = (options: Options): Cell[] => {
+        let gameboard: Cell[] = [];
 
         for (let y = 0; y < options.rows; y++) {
             for (let x = 0; x < options.columns; x++) {
@@ -29,11 +31,11 @@ export default function model(options) {
 
     let gameboard = createGameBoard(options);
 
-    const getCellIndex = (x, y) => {
+    const getCellIndex = (x: number, y: number) => {
         return x + (y * options.columns);
     };
 
-    function changeCellState(x, y) {
+    function changeCellState(x: number, y: number) {
         const cellX = Math.floor(x / options.side);
         const cellY = Math.floor(y / options.side);
         const cellIndex = getCellIndex(cellX, cellY);
@@ -48,7 +50,7 @@ export default function model(options) {
         return randomBoard;
     };
 
-    function updateGameboard(board) {
+    function updateGameboard(board: Cell[]) {
         for (let i = 0; i < gameboard.length; i++) {
             gameboard[i] = board[i];
         }
@@ -68,7 +70,7 @@ export default function model(options) {
         updateGameboard(gameboardCopy);
     };
 
-    function aliveConditions(cell, numberOfAliveCells) {
+    function aliveConditions(cell: Cell, numberOfAliveCells: number) {
         let cellState = cell;
         if (numberOfAliveCells === 3) {
             cellState = changeAliveState(cell, true);
@@ -78,7 +80,7 @@ export default function model(options) {
         return cellState;
     }
 
-    const checkNeighbors = (cell) => {
+    const checkNeighbors = (cell: Cell) => {
         const x = cell.x;
         const y = cell.y;
 
@@ -88,7 +90,7 @@ export default function model(options) {
         return numberOfAliveCells;
     };
 
-    const checkAliveState = (x, y) => {
+    const checkAliveState = (x: number, y: number) => {
         const cellIndex = getCellIndex(x, y);
         if (x < 0 || x >= options.columns || y < 0 || y >= options.rows) {
             return 0;
