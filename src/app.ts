@@ -1,9 +1,10 @@
 import view from "./view.js";
 import model from "./model.js";
+import { Cell, Options } from "./types.js";
 
 function init() {
 
-    const gameOptions = {
+    const gameOptions: Options = {
         rows: 60,
         columns: 100,
         side: 10,
@@ -12,8 +13,8 @@ function init() {
 
     const animationTimer = 100;
 
-    function getCursorPosition(event) {
-        const canvas = document.querySelector("canvas");
+    function getCursorPosition(event: MouseEvent) {
+        const canvas = document.querySelector("canvas") as HTMLCanvasElement;
         const x = event.offsetX * canvas.width / canvas.clientWidth;
         const y = event.offsetY * canvas.height / canvas.clientHeight;
         return { x, y };
@@ -47,12 +48,12 @@ function init() {
         }
     });
 
-    function renderBoard(gameboard) {
+    function renderBoard(gameboard: Cell[]) {
         appModel.updateGameboard(gameboard);
         appView.drawGameboard(appModel.gameboard);
     }
 
-    function draw(event) {
+    function draw(event: MouseEvent) {
         const { x, y } = getCursorPosition(event);
         if (!gameOptions.playing) {
             appModel.changeCellState(x, y);
