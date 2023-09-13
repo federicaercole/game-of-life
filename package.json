@@ -2,10 +2,13 @@
   "name": "game-of-life",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://federicaercole.github.io/game-of-life/",
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +17,11 @@
     "@babel/core": "^7.22.0",
     "@babel/preset-env": "^7.22.0",
     "babel-jest": "^29.5.0",
+    "gh-pages": "^6.0.0",
     "jest": "^29.5.0"
   },
   "dependencies": {
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9"
   }
 }
